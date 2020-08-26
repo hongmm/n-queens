@@ -69,6 +69,7 @@
     \__ \ || (_| | |  | |_  | | | |  __/ | |  __/_
     |___/\__\__,_|_|   \__| |_| |_|\___|_|  \___(_)
 
+
     */
     /*=========================================================================
     =                 TODO: fill in these Helper Functions                    =
@@ -134,12 +135,37 @@
     },
 
 
-
     // Major Diagonals - go from top-left to bottom-right
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
+      //check if parameter is > -1 * this.rows().length and is less than this.rows().length //
+      var colIndex = majorDiagonalColumnIndexAtFirstRow;
+      // if the index === this.rows().length then return false
+      if (colIndex > - (this.rows().length) && colIndex < this.rows().length) {
+        var count = 0;
+        //set starting point = [0, colIndex]
+        var start = [0, colIndex];
+        //iterate over rows and from the starting point, we would add 1 to row and col // [0 -2] -> [-1, 1] -> ...
+        for (var i = 0; i < this.rows().length; i ++) {
+          var checkRow = start[0] + i;
+          var checkCol = start[1] + i;
+          // every iteration, we would check if this new point passes _isInBounds
+          // _isInBounds: function(rowIndex, colIndex)
+          if (this._isInBounds(checkRow, checkCol)) {
+            // if it passes, we check if value is 1
+            if (this.rows()[checkRow][checkCol] === 1) {
+              // count++
+              count++;
+            }
+            // if count > 1 return true
+            if (count > 1) {
+              return true;
+            }
+          }
+        }
+      }
       return false; // fixme
     },
 
