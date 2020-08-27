@@ -23,33 +23,61 @@
 
 
 window.findNRooksSolution = function(n) {
-  var solution = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0]
-  ]; // has to be a matrix
-  var bannedRows = [];
-  var bannedCols = [];
-
-  for (var i = 0; i < n; i++) { // rows
-    for (var j = 0; j < n; j++) { // cols
-      if (!bannedRows.includes(i) && !bannedCols.includes(j)) {
-        //solution.push([i,j]);
-        solution[i][j] = 1;
-        bannedRows.push(i);
-        bannedCols.push(j);
+  var solution = new Board({n: n});
+  for (var i = 0; i < n; i++) {
+    for (var j = 0; j < n; j++) {
+      solution.togglePiece(i, j);
+      if (solution.hasRowConflictAt(i) || solution.hasColConflictAt(j)) {
+        solution.togglePiece(i, j);
       }
     }
   }
-
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
-  return solution;
+  return solution.rows();
 };
 //
+// var rockPaperScissors = function (n) {
+//   var combinations = ['R', 'P', 'S'];
+//   var count = 0;
+//   var sequencer = function(possibleSequences) {
+//     var options = ['R', 'P', 'S'];
+//     var newSequences = [];
+//     for (var i = 0; i < possibleSequences.length; i ++) {
+//       for (var j = 0; j < options.length; j++) {
+//         var sequence = possibleSequences[i] + options[j];
+//         newSequences.push(sequence);
+//       }
+//     }
+//     return newSequences;
+//   }
+//   while (count < n - 1) {
+//     combinations = sequencer(combinations);
+//     count ++;
+//   }
+//   return combinations;
+// };
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
+//using a for or while loop, moving left to right on nodes of a tree
+//using recursion: going up and down a level
+
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = 0;
+  var solution = new Board({n: n});
+  var recurse = function(row) {
+    for (var col = 0; col < n; col++) {
+      solution.togglePiece(row, col);
+      if (!solution.hasRowConflictAt(row) && !solution.hasColConflictAt(col)) {
+        if (row === n - 1) {
+          solutionCount++;
+        } else {
+          recurse(row + 1);
+        }
+      }
+      solution.togglePiece(row, col);
+    }
+  };
+
+  recurse(0);
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
